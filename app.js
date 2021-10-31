@@ -17,6 +17,7 @@ app.use(morgan('dev'));
 
 
 app.post('/all', controller.getAll);
+app.post('/submit-order', controller.updateOrder);
 
 
 app.listen(PORT, () => {

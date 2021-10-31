@@ -66,25 +66,32 @@ export default {
       console.log(req.body);
       const {
         search,
-        // page,
-        limit
+        limit,
+        ordered,
       } = req.body;
-      // const skip = (page - 1) * limit;
-      const query = {};
+      const query = {
+        $and: [{
+          $or: [
+            { ordered: false },
+          ]
+        }]
+      };
+      if (ordered) {
+        query["$and"][0]["$or"].push({ ordered: true });
+      }
       if (search) {
-        query["$or"] = [
-          { name: { $regex: search, $options: "i" } },
-          { mobile: { $regex: search, $options: "i" } }
-        ]
+        query["$and"].push({
+          "$or": [
+            { name: { $regex: search, $options: "i" } },
+            { mobile: { $regex: search, $options: "i" } }
+          ]
+        });
       }
 
-      // const total = await ordersModel.find(query).count();
-      // console.log(total);
       const data = await ordersModel
         .find(query)
         .limit(limit)
         .sort({ name: 1 });
-      // .skip(skip);
 
       if (!data) {
         return errorResponse(req, res, {}, "Error while fetching data.", 500);
@@ -100,6 +107,7 @@ export default {
   updateOrder: async (req, res) => {
     try {
       const { id } = req.body;
+      console.log(id);
       const updated = await ordersModel.findByIdAndUpdate(
         id,
         { ordered: true },

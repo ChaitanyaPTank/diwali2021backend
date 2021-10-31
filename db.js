@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 mongoose.connect('mongodb://localhost:27017/diwali',
+// mongoose.connect('mongodb+srv://chaitanya:%40Akshardham@mandir.6mpry.mongodb.net/diwali?authSource=admin&replicaSet=atlas-i6i4zx-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true',
   (err) => {
     if (err)
       console.log(err);
