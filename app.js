@@ -4,7 +4,7 @@ import cors from 'cors';
 import controller from "./controller.js";
 
 
-const PORT = process.env.port || 80;
+const PORT = process.env.port || 8085;
 
 
 const app = express();
@@ -17,7 +17,8 @@ app.use(morgan('dev'));
 
 
 app.post('/all', controller.getAll);
-app.post('/submit-order', controller.updateOrder);
+app.post('/submit-order', controller.submitOrder);
+app.get('/get-stock', controller.getStock);
 
 
 app.listen(PORT, () => {
