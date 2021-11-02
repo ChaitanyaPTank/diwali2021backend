@@ -1,5 +1,5 @@
 applications:
-- name: diwali2021backend
+- name: backend2021
   memory: 64M
   buildpack: https://github.com/cloudfoundry/nodejs-buildpack
   command: node app.js

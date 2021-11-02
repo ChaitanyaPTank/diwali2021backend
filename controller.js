@@ -1,4 +1,8 @@
-import { ordersModel, stockModel } from "./db.js";
+import {
+  ordersModel,
+  stockModel,
+  newOrdersModel
+} from "./db.js";
 // import sequelize from 'sequelize';
 // const Op = sequelize.Op;
 
@@ -31,35 +35,6 @@ const successResponse = async (
 
 
 export default {
-  getAllUnordered: async (req, res) => {
-    try {
-      const {
-        search
-      } = req.body;
-      const query = { ordered: false };
-      if (search) {
-        query["$or"] = [
-          { name: { $regex: search, $options: "i" } },
-          { mobile: { $regex: search, $options: "i" } }
-        ]
-      }
-      if (mobile) {
-        query["or"] = {
-          mobile: { regex: mobile, $options: "i" },
-        }
-      }
-
-      const data = await ordersModel.find(query);
-      if (!data) {
-        return errorResponse(req, res, {}, "Error while fetching data.", 500);
-      }
-      return successResponse(req, res, data, "Success.");
-    } catch (err) {
-      console.log(err);
-      return errorResponse(req, res, {}, err.message, 500);
-    }
-  },
-
 
   getAll: async (req, res) => {
     try {
@@ -143,36 +118,38 @@ export default {
     try {
 
       const [{ _id, __v, ...stock }] = await stockModel.find({}, {}, { lean: true });
+      const query = {
+        kaju_mesub: { $sum: { $cond: [{ $ne: ["$kaju_mesub", ""] }, { $toDouble: "$kaju_mesub" }, 0] } },
+        kaju_kasata: { $sum: { $cond: [{ $ne: ["$kaju_kasata", ""] }, { $toDouble: "$kaju_kasata" }, 0] } },
+        kaju_katri: { $sum: { $cond: [{ $ne: ["$kaju_katri", ""] }, { $toDouble: "$kaju_katri" }, 0] } },
+        anjeer_patra: { $sum: { $cond: [{ $ne: ["$anjeer_patra", ""] }, { $toDouble: "$anjeer_patra" }, 0] } },
+        surti_ghari: { $sum: { $cond: [{ $ne: ["$surti_ghari", ""] }, { $toDouble: "$surti_ghari" }, 0] } },
+        ghughra: { $sum: { $cond: [{ $ne: ["$ghughra", ""] }, { $toDouble: "$ghughra" }, 0] } },
+        khajur_roll: { $sum: { $cond: [{ $ne: ["$khajur_roll", ""] }, { $toDouble: "$khajur_roll" }, 0] } },
+        adadiya: { $sum: { $cond: [{ $ne: ["$adadiya", ""] }, { $toDouble: "$adadiya" }, 0] } },
+        mohanthal: { $sum: { $cond: [{ $ne: ["$mohanthal", ""] }, { $toDouble: "$mohanthal" }, 0] } },
+        sata: { $sum: { $cond: [{ $ne: ["$sata", ""] }, { $toDouble: "$sata" }, 0] } },
+        pauva_chevdo: { $sum: { $cond: [{ $ne: ["$pauva_chevdo", ""] }, { $toDouble: "$pauva_chevdo" }, 0] } },
+        tikha_gathiya: { $sum: { $cond: [{ $ne: ["$tikha_gathiya", ""] }, { $toDouble: "$tikha_gathiya" }, 0] } },
+        flower_gathiya: { $sum: { $cond: [{ $ne: ["$flower_gathiya", ""] }, { $toDouble: "$flower_gathiya" }, 0] } },
+        alu_sev: { $sum: { $cond: [{ $ne: ["$alu_sev", ""] }, { $toDouble: "$alu_sev" }, 0] } },
+        tikhi_papdi: { $sum: { $cond: [{ $ne: ["$tikhi_papdi", ""] }, { $toDouble: "$tikhi_papdi" }, 0] } },
+        tikhu_chavanu: { $sum: { $cond: [{ $ne: ["$tikhu_chavanu", ""] }, { $toDouble: "$tikhu_chavanu" }, 0] } },
+        nankhatai: { $sum: { $cond: [{ $ne: ["$nankhatai", ""] }, { $toDouble: "$nankhatai" }, 0] } },
+        pista_biscuits: { $sum: { $cond: [{ $ne: ["$pista_biscuits", ""] }, { $toDouble: "$pista_biscuits" }, 0] } },
+        cholafali: { $sum: { $cond: [{ $ne: ["$cholafali", ""] }, { $toDouble: "$cholafali" }, 0] } },
+        mathiya: { $sum: { $cond: [{ $ne: ["$mathiya", ""] }, { $toDouble: "$mathiya" }, 0] } },
+      }
       const data = await ordersModel.aggregate([
         {
           $group: {
             _id: "$ordered",
-            kaju_mesub: { $sum: { $cond: [{ $ne: ["$kaju_mesub", ""] }, { $toDouble: "$kaju_mesub" }, 0] } },
-            kaju_kasata: { $sum: { $cond: [{ $ne: ["$kaju_kasata", ""] }, { $toDouble: "$kaju_kasata" }, 0] } },
-            kaju_katri: { $sum: { $cond: [{ $ne: ["$kaju_katri", ""] }, { $toDouble: "$kaju_katri" }, 0] } },
-            anjeer_patra: { $sum: { $cond: [{ $ne: ["$anjeer_patra", ""] }, { $toDouble: "$anjeer_patra" }, 0] } },
-            surti_ghari: { $sum: { $cond: [{ $ne: ["$surti_ghari", ""] }, { $toDouble: "$surti_ghari" }, 0] } },
-            ghughra: { $sum: { $cond: [{ $ne: ["$ghughra", ""] }, { $toDouble: "$ghughra" }, 0] } },
-            khajur_roll: { $sum: { $cond: [{ $ne: ["$khajur_roll", ""] }, { $toDouble: "$khajur_roll" }, 0] } },
-            adadiya: { $sum: { $cond: [{ $ne: ["$adadiya", ""] }, { $toDouble: "$adadiya" }, 0] } },
-            mohanthal: { $sum: { $cond: [{ $ne: ["$mohanthal", ""] }, { $toDouble: "$mohanthal" }, 0] } },
-            sata: { $sum: { $cond: [{ $ne: ["$sata", ""] }, { $toDouble: "$sata" }, 0] } },
-            pauva_chevdo: { $sum: { $cond: [{ $ne: ["$pauva_chevdo", ""] }, { $toDouble: "$pauva_chevdo" }, 0] } },
-            tikha_gathiya: { $sum: { $cond: [{ $ne: ["$tikha_gathiya", ""] }, { $toDouble: "$tikha_gathiya" }, 0] } },
-            flower_gathiya: { $sum: { $cond: [{ $ne: ["$flower_gathiya", ""] }, { $toDouble: "$flower_gathiya" }, 0] } },
-            alu_sev: { $sum: { $cond: [{ $ne: ["$alu_sev", ""] }, { $toDouble: "$alu_sev" }, 0] } },
-            tikhi_papdi: { $sum: { $cond: [{ $ne: ["$tikhi_papdi", ""] }, { $toDouble: "$tikhi_papdi" }, 0] } },
-            tikhu_chavanu: { $sum: { $cond: [{ $ne: ["$tikhu_chavanu", ""] }, { $toDouble: "$tikhu_chavanu" }, 0] } },
-            nankhatai: { $sum: { $cond: [{ $ne: ["$nankhatai", ""] }, { $toDouble: "$nankhatai" }, 0] } },
-            pista_biscuits: { $sum: { $cond: [{ $ne: ["$pista_biscuits", ""] }, { $toDouble: "$pista_biscuits" }, 0] } },
-            pista_biscuit: { $sum: { $cond: [{ $ne: ["$pista_biscuit", ""] }, { $toDouble: "$pista_biscuit" }, 0] } },
-            cholafali: { $sum: { $cond: [{ $ne: ["$cholafali", ""] }, { $toDouble: "$cholafali" }, 0] } },
-            mathiya: { $sum: { $cond: [{ $ne: ["$mathiya", ""] }, { $toDouble: "$mathiya" }, 0] } },
+            ...query
           }
         },
         {
           $addFields: {
-            ordered: "$_id",
+            ordered: "$_id"
           }
         },
         {
@@ -184,16 +161,107 @@ export default {
       ]);
 
       const [order] = data.filter(item => item.ordered === true);
-      console.log(order)
+      const newOrderData = await newOrdersModel.aggregate([
+        {
+          $group: {
+            _id: "$ordered",
+            kaju_mesub: { $sum: { $cond: ["$kaju_mesub", "$kaju_mesub", 0] } },
+            kaju_kasata: { $sum: { $cond: ["$kaju_kasata", "$kaju_kasata", 0] } },
+            kaju_katri: { $sum: { $cond: ["$kaju_katri", "$kaju_katri", 0] } },
+            anjeer_patra: { $sum: { $cond: ["$anjeer_patra", "$anjeer_patra", 0] } },
+            surti_ghari: { $sum: { $cond: ["$surti_ghari", "$surti_ghari", 0] } },
+            ghughra: { $sum: { $cond: ["$ghughra", "$ghughra", 0] } },
+            khajur_roll: { $sum: { $cond: ["$khajur_roll", "$khajur_roll", 0] } },
+            adadiya: { $sum: { $cond: ["$adadiya", "$adadiya", 0] } },
+            mohanthal: { $sum: { $cond: ["$mohanthal", "$mohanthal", 0] } },
+            sata: { $sum: { $cond: ["$sata", "$sata", 0] } },
+            pauva_chevdo: { $sum: { $cond: ["$pauva_chevdo", "$pauva_chevdo", 0] } },
+            tikha_gathiya: { $sum: { $cond: ["$tikha_gathiya", "$tikha_gathiya", 0] } },
+            flower_gathiya: { $sum: { $cond: ["$flower_gathiya", "$flower_gathiya", 0] } },
+            alu_sev: { $sum: { $cond: ["$alu_sev", "$alu_sev", 0] } },
+            tikhi_papdi: { $sum: { $cond: ["$tikhi_papdi", "$tikhi_papdi", 0] } },
+            tikhu_chavanu: { $sum: { $cond: ["$tikhu_chavanu", "$tikhu_chavanu", 0] } },
+            nankhatai: { $sum: { $cond: ["$nankhatai", "$nankhatai", 0] } },
+            pista_biscuits: { $sum: { $cond: ["$pista_biscuits", "$pista_biscuits", 0] } },
+            cholafali: { $sum: { $cond: ["$cholafali", "$cholafali", 0] } },
+            mathiya: { $sum: { $cond: ["$mathiya", "$mathiya", 0] } },
+          }
+        },
+        {
+          $addFields: {
+            ordered: "$_id"
+          }
+        },
+        {
+          $project: {
+            _id: 0,
+            __v: 0,
+          }
+        }
+      ])
+
+      const [newOrder] = newOrderData.filter(item => item.ordered === true);
 
       for (let item in stock) {
-        stock[item] -= order[item]
+        order[item] += newOrder[item];
+        stock[item] -= order[item];
       }
 
       return successResponse(req, res, { stock, order }, "Success");
     } catch (err) {
       console.log(err);
       return errorResponse(req, res, {}, err.message);
+    }
+  },
+
+  addNewOrder: async (req, res) => {
+    try {
+      const order = req.body;
+      console.log(req.body);
+      const newOrder = await newOrdersModel.create({
+        ...order,
+        ordered: true
+      });
+      if (!newOrder) {
+        return errorResponse(req, res, {}, "Error while adding new order");
+      }
+      return successResponse(req, res, {}, "Success!");
+    } catch (err) {
+      console.log(err);
+      return errorResponse(req, res, {}, err.message);
+    }
+  },
+
+  getNewOrders: async (req, res) => {
+    try {
+      console.log(req.body);
+      const {
+        search,
+        limit,
+      } = req.body;
+      const query = {
+      };
+
+      if (search) {
+
+        query["$or"] = [
+          { name: { $regex: search, $options: "i" } },
+          { mobile: { $regex: search, $options: "i" } }
+        ];
+      }
+
+      const data = await newOrdersModel
+        .find(query)
+        .limit(limit)
+        .sort({ name: 1 });
+
+      if (!data) {
+        return errorResponse(req, res, {}, "Error while fetching data.", 500);
+      }
+      return successResponse(req, res, data, "Success.");
+    } catch (err) {
+      console.log(err);
+      return errorResponse(req, res, {}, err.message, 500);
     }
   }
 }

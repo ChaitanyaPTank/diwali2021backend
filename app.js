@@ -18,7 +18,13 @@ app.use(morgan('dev'));
 
 app.post('/all', controller.getAll);
 app.post('/submit-order', controller.submitOrder);
+app.post('/add-order', controller.addNewOrder);
 app.get('/get-stock', controller.getStock);
+app.post('/new-orders', controller.getNewOrders)
+
+app.get('/', (req, res) => {
+	return res.send("Jay Swaminarayana");
+})
 
 
 app.listen(PORT, () => {
