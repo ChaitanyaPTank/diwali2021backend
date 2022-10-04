@@ -3,15 +3,44 @@ import {
   stockModel,
   newOrdersModel
 } from "./db.js";
-// import sequelize from 'sequelize';
-// const Op = sequelize.Op;
 
-// const file = await fs.readFile('D:/Chaitanya/Projects/Diwali2021/exported.csv');
-// const data = file.toString().split("\n").slice(1);
-// const splitted = data.map(row => {
-//   return row.split(",");
-// });
-// console.log(splitted[0]);
+// (async () => {
+//   const orders = await ordersModel.find();
+//   const result = await Promise.all(orders.map(e => ordersModel.findByIdAndUpdate(e._id, { ordered: false })));
+//   console.log(result)
+// })()
+
+const items = [
+  "sata",
+  "mohanthal",
+  "magas",
+  "gulab_jamun",
+  "motichur_ladu",
+  "churma_ladu",
+  "dudh_na_penda",
+  "surti_ghari",
+  "kaju_katri",
+  "kaju_mesub",
+  "pauva_chavdo",
+  "bhanagari_gathiya",
+  "tikha_ganthiya",
+  "naylon_ganthiya",
+  "ratlami_sev",
+  "tikhi_papdi",
+  "moli_papdi",
+  "sev_regular",
+  "khari",
+  "dry_kachori",
+  "fulvadi",
+  "nadiyadi_chavanu",
+  "navratna_chavanu",
+  "nankhatai",
+  "dry_fruit_biscuit",
+  "badam_biscuit",
+  "black_berry_biscuit",
+  "jalebi",
+  "undhiyu"
+]
 
 
 const errorResponse = async (
@@ -51,9 +80,11 @@ export default {
           ]
         }]
       };
+
       if (ordered) {
         query["$and"][0]["$or"].push({ ordered: true });
       }
+
       if (search) {
         query["$and"].push({
           "$or": [
@@ -71,6 +102,7 @@ export default {
       if (!data) {
         return errorResponse(req, res, {}, "Error while fetching data.", 500);
       }
+
       return successResponse(req, res, data, "Success.");
     } catch (err) {
       console.log(err);
@@ -118,28 +150,7 @@ export default {
     try {
 
       const [{ _id, __v, ...stock }] = await stockModel.find({}, {}, { lean: true });
-      const query = {
-        kaju_mesub: { $sum: { $cond: [{ $ne: ["$kaju_mesub", ""] }, { $toDouble: "$kaju_mesub" }, 0] } },
-        kaju_kasata: { $sum: { $cond: [{ $ne: ["$kaju_kasata", ""] }, { $toDouble: "$kaju_kasata" }, 0] } },
-        kaju_katri: { $sum: { $cond: [{ $ne: ["$kaju_katri", ""] }, { $toDouble: "$kaju_katri" }, 0] } },
-        anjeer_patra: { $sum: { $cond: [{ $ne: ["$anjeer_patra", ""] }, { $toDouble: "$anjeer_patra" }, 0] } },
-        surti_ghari: { $sum: { $cond: [{ $ne: ["$surti_ghari", ""] }, { $toDouble: "$surti_ghari" }, 0] } },
-        ghughra: { $sum: { $cond: [{ $ne: ["$ghughra", ""] }, { $toDouble: "$ghughra" }, 0] } },
-        khajur_roll: { $sum: { $cond: [{ $ne: ["$khajur_roll", ""] }, { $toDouble: "$khajur_roll" }, 0] } },
-        adadiya: { $sum: { $cond: [{ $ne: ["$adadiya", ""] }, { $toDouble: "$adadiya" }, 0] } },
-        mohanthal: { $sum: { $cond: [{ $ne: ["$mohanthal", ""] }, { $toDouble: "$mohanthal" }, 0] } },
-        sata: { $sum: { $cond: [{ $ne: ["$sata", ""] }, { $toDouble: "$sata" }, 0] } },
-        pauva_chevdo: { $sum: { $cond: [{ $ne: ["$pauva_chevdo", ""] }, { $toDouble: "$pauva_chevdo" }, 0] } },
-        tikha_gathiya: { $sum: { $cond: [{ $ne: ["$tikha_gathiya", ""] }, { $toDouble: "$tikha_gathiya" }, 0] } },
-        flower_gathiya: { $sum: { $cond: [{ $ne: ["$flower_gathiya", ""] }, { $toDouble: "$flower_gathiya" }, 0] } },
-        alu_sev: { $sum: { $cond: [{ $ne: ["$alu_sev", ""] }, { $toDouble: "$alu_sev" }, 0] } },
-        tikhi_papdi: { $sum: { $cond: [{ $ne: ["$tikhi_papdi", ""] }, { $toDouble: "$tikhi_papdi" }, 0] } },
-        tikhu_chavanu: { $sum: { $cond: [{ $ne: ["$tikhu_chavanu", ""] }, { $toDouble: "$tikhu_chavanu" }, 0] } },
-        nankhatai: { $sum: { $cond: [{ $ne: ["$nankhatai", ""] }, { $toDouble: "$nankhatai" }, 0] } },
-        pista_biscuits: { $sum: { $cond: [{ $ne: ["$pista_biscuits", ""] }, { $toDouble: "$pista_biscuits" }, 0] } },
-        cholafali: { $sum: { $cond: [{ $ne: ["$cholafali", ""] }, { $toDouble: "$cholafali" }, 0] } },
-        mathiya: { $sum: { $cond: [{ $ne: ["$mathiya", ""] }, { $toDouble: "$mathiya" }, 0] } },
-      }
+      const query = makeQuery(items)
       const data = await ordersModel.aggregate([
         {
           $group: {
@@ -165,26 +176,7 @@ export default {
         {
           $group: {
             _id: "$ordered",
-            kaju_mesub: { $sum: { $cond: ["$kaju_mesub", "$kaju_mesub", 0] } },
-            kaju_kasata: { $sum: { $cond: ["$kaju_kasata", "$kaju_kasata", 0] } },
-            kaju_katri: { $sum: { $cond: ["$kaju_katri", "$kaju_katri", 0] } },
-            anjeer_patra: { $sum: { $cond: ["$anjeer_patra", "$anjeer_patra", 0] } },
-            surti_ghari: { $sum: { $cond: ["$surti_ghari", "$surti_ghari", 0] } },
-            ghughra: { $sum: { $cond: ["$ghughra", "$ghughra", 0] } },
-            khajur_roll: { $sum: { $cond: ["$khajur_roll", "$khajur_roll", 0] } },
-            adadiya: { $sum: { $cond: ["$adadiya", "$adadiya", 0] } },
-            mohanthal: { $sum: { $cond: ["$mohanthal", "$mohanthal", 0] } },
-            sata: { $sum: { $cond: ["$sata", "$sata", 0] } },
-            pauva_chevdo: { $sum: { $cond: ["$pauva_chevdo", "$pauva_chevdo", 0] } },
-            tikha_gathiya: { $sum: { $cond: ["$tikha_gathiya", "$tikha_gathiya", 0] } },
-            flower_gathiya: { $sum: { $cond: ["$flower_gathiya", "$flower_gathiya", 0] } },
-            alu_sev: { $sum: { $cond: ["$alu_sev", "$alu_sev", 0] } },
-            tikhi_papdi: { $sum: { $cond: ["$tikhi_papdi", "$tikhi_papdi", 0] } },
-            tikhu_chavanu: { $sum: { $cond: ["$tikhu_chavanu", "$tikhu_chavanu", 0] } },
-            nankhatai: { $sum: { $cond: ["$nankhatai", "$nankhatai", 0] } },
-            pista_biscuits: { $sum: { $cond: ["$pista_biscuits", "$pista_biscuits", 0] } },
-            cholafali: { $sum: { $cond: ["$cholafali", "$cholafali", 0] } },
-            mathiya: { $sum: { $cond: ["$mathiya", "$mathiya", 0] } },
+            ...makeQuery(items)
           }
         },
         {
@@ -217,7 +209,6 @@ export default {
   addNewOrder: async (req, res) => {
     try {
       const order = req.body;
-      console.log(req.body);
       const newOrder = await newOrdersModel.create({
         ...order,
         ordered: true
@@ -234,7 +225,6 @@ export default {
 
   getNewOrders: async (req, res) => {
     try {
-      console.log(req.body);
       const {
         search,
         limit,
@@ -264,4 +254,12 @@ export default {
       return errorResponse(req, res, {}, err.message, 500);
     }
   }
+}
+
+function makeQuery(entity) {
+  const result = {};
+  entity.map(e => result[e] = {
+    $sum: { $cond: [{ $ne: [`$${e}`, ""] }, { $toDouble: `$${e}` }, 0] }
+  })
+  return result;
 }

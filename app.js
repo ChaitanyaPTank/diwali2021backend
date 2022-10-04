@@ -4,7 +4,7 @@ import cors from 'cors';
 import controller from "./controller.js";
 
 
-const PORT = process.env.port || 8085;
+const PORT = process.env.PORT || 8085;
 
 
 const app = express();
@@ -23,7 +23,7 @@ app.get('/get-stock', controller.getStock);
 app.post('/new-orders', controller.getNewOrders)
 
 app.get('/', (req, res) => {
-	return res.send("Jay Swaminarayana");
+	return res.send("Jay Swaminarayan");
 })
 
 

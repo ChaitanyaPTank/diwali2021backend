@@ -2,142 +2,135 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 
-// mongoose.connect('mongodb://localhost:27017/diwali',
-mongoose.connect(`mongodb+srv://chaitanya:%40Akshardham@mandir.6mpry.mongodb.net/diwali?authSource=admin&replicaSet=atlas-i6i4zx-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true`,
+mongoose.connect(
+  'mongodb://localhost:27017/DUSSERA2022',
   (err) => {
     if (err)
       console.log(err);
-  });
+  }
+);
+
+
+const ORDERS_DATA_MODAL = {
+  name: String,
+  mobile: String,
+  sata: Number,
+  mohanthal: Number,
+  magas: Number,
+  gulab_jamun: Number,
+  motichur_ladu: Number,
+  churma_ladu: Number,
+  dudh_na_penda: Number,
+  surti_ghari: Number,
+  kaju_katri: Number,
+  kaju_mesub: Number,
+  pauva_chavdo: Number,
+  bhanagari_gathiya: Number,
+  tikha_ganthiya: Number,
+  naylon_ganthiya: Number,
+  ratlami_sev: Number,
+  tikhi_papdi: Number,
+  moli_papdi: Number,
+  sev_regular: Number,
+  khari: Number,
+  dry_kachori: Number,
+  fulvadi: Number,
+  nadiyadi_chavanu: Number,
+  navratna_chavanu: Number,
+  nankhatai: Number,
+  dry_fruit_biscuit: Number,
+  badam_biscuit: Number,
+  black_berry_biscuit: Number,
+  undhiyu: Number,
+  jalebi: Number
+};
+
 
 const Orders = new Schema({
-  name: String,
-  mobile: String,
-  kaju_mesub: Number,
-  kaju_kasata: Number,
-  kaju_katri: Number,
-  anjeer_patra: Number,
-  surti_ghari: Number,
-  ghughra: Number,
-  khajur_roll: Number,
-  adadiya: Number,
-  mohanthal: Number,
-  sata: Number,
-  pauva_chevdo: Number,
-  tikha_gathiya: Number,
-  flower_gathiya: Number,
-  alu_sev: Number,
-  tikhi_papdi: Number,
-  tikhu_chavanu: Number,
-  nankhatai: Number,
-  pista_biscuits: Number,
-  cholafali: Number,
-  mathiya: Number,
-}, {
-  strict: false,
-  timestamps: false,
-  collection: 'orders',
+  ...ORDERS_DATA_MODAL,
+  ordered: {
+    type: Boolean,
+    default: false
+  }
 });
 
-const newOrders = new Schema({
-  name: String,
-  mobile: String,
-  kaju_mesub: Number,
-  kaju_kasata: Number,
-  kaju_katri: Number,
-  anjeer_patra: Number,
-  surti_ghari: Number,
-  ghughra: Number,
-  khajur_roll: Number,
-  adadiya: Number,
-  mohanthal: Number,
-  sata: Number,
-  pauva_chevdo: Number,
-  tikha_gathiya: Number,
-  flower_gathiya: Number,
-  alu_sev: Number,
-  tikhi_papdi: Number,
-  tikhu_chavanu: Number,
-  nankhatai: Number,
-  pista_biscuits: Number,
-  cholafali: Number,
-  mathiya: Number,
-}, {
-  strict: false,
-  timestamps: false,
-  collection: 'new_orders',
-});
 
-const Stock = new Schema({
-  kaju_mesub: Number,
-  kaju_kasata: Number,
-  kaju_katri: Number,
-  anjeer_patra: Number,
-  surti_ghari: Number,
-  ghughra: Number,
-  khajur_roll: Number,
-  adadiya: Number,
-  mohanthal: Number,
-  sata: Number,
-  pauva_chevdo: Number,
-  tikha_gathiya: Number,
-  flower_gathiya: Number,
-  alu_sev: Number,
-  tikhi_papdi: Number,
-  tikhu_chavanu: Number,
-  nankhatai: Number,
-  pista_biscuits: Number,
-  cholafali: Number,
-  mathiya: Number,
-}, {
-  collection: 'stock'
-});
+const newOrders = new Schema(ORDERS_DATA_MODAL);
+
+
+const { name: _name, mobile: _mobile, STOCK_DATA_MODEL } = ORDERS_DATA_MODAL;
+const Stock = new Schema(STOCK_DATA_MODEL);
+
+/**
+ * TO ADD ITEMS WITH PRICE FOR FINAL CALCULATIONS
+ */
+// const Items = new Schema({
+//   name: String,
+//   price: Number
+// }, {
+//   collection: 'items'
+// })
 
 // const data = [
-//   { name: "kaju_mesub", price: 450 },
-//   { name: "kaju_kasata", price: 400 },
-//   { name: "kaju_katri", price: 360 },
-//   { name: "anjeer_patra", price: 400 },
-//   { name: "surti_ghari", price: 320 },
-//   { name: "ghughra", price: 210 },
-//   { name: "khajur_roll", price: 200 },
-//   { name: "adadiya", price: 200 },
-//   { name: "mohanthal", price: 150 },
-//   { name: "sata", price: 100 },
-//   { name: "pauva_chevdo", price: 75 },
-//   { name: "tikha_gathiya", price: 80 },
-//   { name: "flower_gathiya", price: 80 },
-//   { name: "alu_sev", price: 80 },
-//   { name: "tikhi_papdi", price: 90 },
-//   { name: "tikhu_chavanu", price: 80 },
-//   { name: "nankhatai", price: 90 },
-//   { name: "pista_biscuit", price: 90 },
-//   { name: "cholafali", price: 110 },
-//   { name: "mathiya", price: 110 },
+//   { name: "sata", price: 10 },
+//   { name: "mohanthal", price: 10 },
+//   { name: "magas", price: 10 },
+//   { name: "gulab_jamun", price: 10 },
+//   { name: "motichur_ladu", price: 10 },
+//   { name: "churma_ladu", price: 10 },
+//   { name: "dudh_na_penda", price: 10 },
+//   { name: "surti_ghari", price: 10 },
+//   { name: "kaju_katri", price: 10 },
+//   { name: "kaju_mesub", price: 10 },
+//   { name: "pauva_chavdo", price: 10 },
+//   { name: "bhanagari_gathiya", price: 10 },
+//   { name: "tikha_ganthiya", price: 10 },
+//   { name: "naylon_ganthiya", price: 10 },
+//   { name: "ratlami_sev", price: 10 },
+//   { name: "tikhi_papdi", price: 10 },
+//   { name: "moli_papdi", price: 10 },
+//   { name: "sev_regular", price: 10 },
+//   { name: "khari", price: 10 },
+//   { name: "dry_kachori", price: 10 },
+//   { name: "fulvadi", price: 10 },
+//   { name: "nadiyadi_chavanu", price: 10 },
+//   { name: "navratna_chavanu", price: 10 },
+//   { name: "nankhatai", price: 10 },
+//   { name: "dry_fruit_biscuit", price: 10 },
+//   { name: "badam_biscuit", price: 10 },
+//   { name: "black_berry_biscuit", price: 10 }
 // ]
 // mongoose.model('items', Items).insertMany(data);
 
 
 // mongoose.model('stock', Stock).create({
-//   "kaju_mesub": 69,
-//   "kaju_kasata": 44,
-//   "kaju_katri": 202.5,
-//   "anjeer_patra": 54,
-//   "surti_ghari": 75,
-//   "ghughra": 126,
-//   "khajur_roll": 80,
-//   "adadiya": 112.5,
-//   "mohanthal": 227,
-//   "sata": 140,
-//   "pauva_chevdo": 145,
-//   "tikha_gathiya": 70.5,
-//   "flower_gathiya": 43.5,
-//   "alu_sev": 117,
-//   "tikhi_papdi": 57,
-//   "tikhu_chavanu": 114.5,
-//   "nankhatai": 86,
-//   "pista_biscuits": 101,
-//   "cholafali": 70,
-//   "mathiya": 60.5,
+//   "sata": 10,
+//   "mohanthal": 10,
+//   "magas": 10,
+//   "gulab_jamun": 10,
+//   "motichur_ladu": 10,
+//   "churma_ladu": 10,
+//   "dudh_na_penda": 10,
+//   "surti_ghari": 10,
+//   "kaju_katri": 10,
+//   "kaju_mesub": 10,
+//   "pauva_chavdo": 10,
+//   "bhanagari_gathiya": 10,
+//   "tikha_ganthiya": 10,
+//   "naylon_ganthiya": 10,
+//   "ratlami_sev": 10,
+//   "tikhi_papdi": 10,
+//   "moli_papdi": 10,
+//   "sev_regular": 10,
+//   "khari": 10,
+//   "dry_kachori": 10,
+//   "fulvadi": 10,
+//   "nadiyadi_chavanu": 10,
+//   "navratna_chavanu": 10,
+//   "nankhatai": 10,
+//   "dry_fruit_biscuit": 10,
+//   "badam_biscuit": 10,
+//   "black_berry_biscuit": 10
 // });
 
 
