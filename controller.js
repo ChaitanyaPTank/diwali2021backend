@@ -113,11 +113,10 @@ export default {
 
   submitOrder: async (req, res) => {
     try {
-      const { id } = req.body;
-      console.log(id);
+      const { id, order } = req.body;
       const updated = await ordersModel.findByIdAndUpdate(
         id,
-        { ordered: true },
+        { ...order, ordered: true },
         { new: true }
       );
       if (!updated) {
