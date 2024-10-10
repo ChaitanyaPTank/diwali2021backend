@@ -4,47 +4,55 @@ import {
   newOrdersModel
 } from "./db.js";
 
+
 // (async () => {
 //   const orders = await ordersModel.find();
-//   const result = await Promise.all(orders.map(e => ordersModel.findByIdAndUpdate(e._id, { ordered: false })));
+//   const result = await Promise.all(orders.map(e => ordersModel.findByIdAndUpdate(e._id,)));
 //   console.log(result)
 // })()
 
+
 const items = [
-  "sata",
-  "mohanthal",
+  "anjir_patra",
+  "kajukasata",
+  "ghughra",
   "magas",
-  "gulab_jamun",
-  "motichur_ladu",
+  "toprapak",
   "churma_ladu",
-  "dudh_na_penda",
-  "surti_ghari",
-  "kaju_katri",
-  "kaju_mesub",
-  "pauva_chavdo",
-  "bhanagari_gathiya",
-  "tikha_ganthiya",
-  "naylon_ganthiya",
-  "ratlami_sev",
+  "kesar_badam_pista",
+  "kajukatri",
+  "khajur_roll",
+  "mohanthal",
+  "sata",
+  "motichur_ladu",
+  "chavanu_mithu",
+  "chvanu_tikhu",
+  "chavanu_surti",
+  "ghau_masala_puri",
+  "sakkarpara",
+  "pauva_chevdo_tikho",
+  "pauva_chevdo_mitho",
+  "tikh_zina_gathiya",
+  "chakri",
   "tikhi_papdi",
   "moli_papdi",
-  "sev_regular",
-  "khari",
-  "dry_kachori",
-  "fulvadi",
-  "nadiyadi_chavanu",
-  "navratna_chavanu",
+  "flower_gathiya",
+  "alusev",
+  "ratlami_sev",
+  "plain_halvo",
+  "pineapple_halvo",
+  "sandwich_halvo",
+  "dryfruit_cookies",
+  "badam_cookies",
   "nankhatai",
-  "dry_fruit_biscuit",
-  "badam_biscuit",
-  "black_berry_biscuit",
-  "jalebi",
-  "undhiyu"
+  "jira_khari",
+  "cholafali",
+  "mathiya",
 ]
 
 
 const errorResponse = async (
-  req, res,
+  _req, res,
   data = {},
   message = MSG.SOMETHING_WRONG,
   code = 500,
@@ -54,7 +62,7 @@ const errorResponse = async (
 
 
 const successResponse = async (
-  req, res,
+  _req, res,
   data = {},
   message = MSG.SUCC,
   code = 200,
@@ -67,7 +75,6 @@ export default {
 
   getAll: async (req, res) => {
     try {
-      console.log(req.body);
       const {
         search,
         limit,
@@ -194,7 +201,7 @@ export default {
       const [newOrder] = newOrderData.filter(item => item.ordered === true);
 
       for (let item in stock) {
-        order[item] += newOrder[item];
+        order[item] += newOrder ? (newOrder[item] || 0) : 0;
         stock[item] -= order[item];
       }
 
@@ -262,3 +269,10 @@ function makeQuery(entity) {
   })
   return result;
 }
+
+
+(async () => {
+
+  const a = await ordersModel.find();
+  console.log(a.length);
+})()
